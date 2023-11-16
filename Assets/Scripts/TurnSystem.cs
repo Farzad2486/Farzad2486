@@ -4,23 +4,22 @@ using UnityEngine;
 
 public class TurnSystem : MonoBehaviour
 {
-    public bool PlayerTurn;
+    public string PlayerTurn;
     void Start()
     {
-        PlayerTurn = true;
-
+        PlayerTurn = "Red";
     }
     public void Turn()
     {
-        if (PlayerTurn)
+        if (PlayerTurn == "Red")
         {
-            Debug.Log("turn1");
-            PlayerTurn = false;
+            Debug.Log("Blue");
+            PlayerTurn = "Blue";
         }
         else
         {
-            Debug.Log("turn2");
-            PlayerTurn = true;
+            Debug.Log("Red");
+            PlayerTurn = "Red";
         }
     }
 }
