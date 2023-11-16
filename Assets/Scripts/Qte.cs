@@ -15,56 +15,82 @@ public class Qte : MonoBehaviour
     public Transform MainCamera;
     public Transform CameraPosition;
     public Transform FightCameraPosition;
+    //for
+    public int[] PlayerValue;
+    int count;
     //scrollbar
-    public Scrollbar scrollbar;
+    public Scrollbar scrollbar1;
+    public Scrollbar scrollbar2;
     private float maximum = 1;
     private float minimum = 0;
     private float ElapsedTime;
     public float Speed = 1;
     private float randomNumberFloat;
-    public float Score;
-    public bool stop;
+    public float Score1;
+    public float Score2;
+    public bool PlayerOneStop;
+    public bool PlayerTwoStop;
     public Sprite[] sprites;
     private int randomNumber;
-    public Image image;
-    public ScrollEvent onValueChanged;
+    public int test;
+    public Image image1;
+    public Image image2;
     void Start()
     {
         randomNumber = Random.Range(3, 9);
-        image.sprite = sprites[randomNumber];
+        image1.sprite = sprites[randomNumber];
+        image2.sprite = sprites[randomNumber];
     }
 
     void Update()
     {
-        if (playerMove.PlayerOneValue == playerMove.PlayerTwoValue)
+        if (!QTE)
         {
-            QTE = true;
-            if (playerMove.PlayerOneValue == 0 & playerMove.PlayerTwoValue == 0)
+            for (int i = 0; i < PlayerValue.Length; i++)
             {
+                count = 1;
+                for (int j = i + 1; j < PlayerValue.Length; j++)
+                {
+                    if (PlayerValue[i] == PlayerValue[j])
+                    {
+                        count++;
+                        PlayerValue[j] = 0;
+                    }
+                }
+                if (count > 1 && PlayerValue[i] != 0)
+                {
+                    Debug.Log(PlayerValue[i]);
+                    QTE = true;
+                    test = i;
+                    if (PlayerValue[i] == 0)
+                    {
+
+                    }
+                    else
+                    {
+                        MainCamera.position = FightCameraPosition.position;
+                        MainCamera.rotation = FightCameraPosition.rotation;
+                        scrollbar1.gameObject.SetActive(true);
+                        scrollbar2.gameObject.SetActive(true);
+                        FightPosition.transform.position = playerMove.grid[i].transform.position;
+                    }
+                    // playerMove.PlayerOne.transform.position = FightPosition1.transform.position;
+                    //  playerMove.PlayerTwo.transform.position = FightPosition2.transform.position;
+                }
 
             }
-            else
-            {
-                MainCamera.position = FightCameraPosition.position;
-                MainCamera.rotation = FightCameraPosition.rotation;
-            }
-            FightPosition.transform.position = playerMove.grid[playerMove.PlayerOneValue].transform.position;
-            playerMove.PlayerOne.transform.position = FightPosition1.transform.position;
-            playerMove.PlayerTwo.transform.position = FightPosition2.transform.position;
         }
-        else
+        /*
+        if (PlayerOneStop & PlayerTwoStop)
         {
-            QTE = false;
-            if (playerMove.PlayerOneValue == 0 & playerMove.PlayerTwoValue == 0)
+            if(Score1 < Score2)
             {
-
-            }
-            else
+                playerMove.PlayerTwoValue = 0;
+            }else
             {
-                MainCamera.position = CameraPosition.position;
-                MainCamera.rotation = CameraPosition.rotation;
+                playerMove.PlayerOneValue = 0;
             }
-        }
+        }*/
         scrollbarVoid();
     }
 
@@ -72,18 +98,37 @@ public class Qte : MonoBehaviour
     {
         randomNumberFloat = randomNumber;
         randomNumberFloat /= 10;
-        Debug.Log(randomNumberFloat - scrollbar.value);
+        ElapsedTime += Speed * Time.deltaTime;
 
-        if (!stop)
+        if (!PlayerOneStop)
         {
-            scrollbar.value = Mathf.Lerp(minimum, maximum, ElapsedTime);
-            ElapsedTime += Speed * Time.deltaTime;
+            scrollbar1.value = Mathf.Lerp(minimum, maximum, ElapsedTime);
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                stop = true;
+                PlayerOneStop = true;
                 Debug.Log("stop");
-                Score = randomNumberFloat -= scrollbar.value;
+                Score1 = randomNumberFloat -= scrollbar1.value;
+            }
+
+            if (ElapsedTime > 1.0f)
+            {
+                float temp = maximum;
+                maximum = minimum;
+                minimum = temp;
+                ElapsedTime = 0.0f;
+            }
+        }
+
+        if (!PlayerTwoStop)
+        {
+            scrollbar2.value = Mathf.Lerp(minimum, maximum, ElapsedTime);
+
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                PlayerTwoStop = true;
+                Debug.Log("stop");
+                Score2 = randomNumberFloat -= scrollbar2.value;
             }
 
             if (ElapsedTime > 1.0f)

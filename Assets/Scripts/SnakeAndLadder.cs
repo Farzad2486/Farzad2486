@@ -11,7 +11,7 @@ public class SnakeAndLatter : MonoBehaviour
 
     void Update()
     { 
-        
+        /*
         if (playerMove.PlayerOneValue == input[0]) 
         {
             playerMove.PlayerOneValue = output[0];
@@ -45,5 +45,6 @@ public class SnakeAndLatter : MonoBehaviour
         {
             playerMove.PlayerTwoValue = output[3];
         }
+        */
     }
 }
